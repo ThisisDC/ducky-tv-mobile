@@ -66,10 +66,11 @@ const styles = StyleSheet.create({
     right: 12,
   },
   liveDot: {
-    width: 12,
+    width: 10,
     aspectRatio: 1,
     borderRadius: 50,
     backgroundColor: 'red',
+    top: 1,
   },
   liveText: {
     fontWeight: 'bold',

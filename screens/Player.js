@@ -7,7 +7,7 @@ import {
   Image,
   Pressable,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import VideoComponent from '../components/VideoComponent';
 import {DEFAULT_CHANNEL_IMAGE, getStreamUrl} from '../data/api';
 import {
@@ -22,6 +22,7 @@ import {useConfigStore} from '../data/store';
 import {addChannel, removeChannel} from '../data/storage';
 import {APP_THEME} from '../utils/colors';
 import ChannelButton from '../components/ChannelButton';
+import SystemNavigationBar from 'react-native-system-navigation-bar';
 
 export const isOrientationLandscape = orientation =>
   orientation === 'LANDSCAPE-LEFT' ||
@@ -30,7 +31,6 @@ export const isOrientationLandscape = orientation =>
 
 export default function PlayerScreen({route, navigation}) {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [orientation, setOrientation] = useState(PORTRAIT);
   const [added, setAdded] = useState(false);
 
@@ -40,6 +40,7 @@ export default function PlayerScreen({route, navigation}) {
 
   const addFavChannel = useConfigStore(state => state.addFavChannel);
   const removeFavChannel = useConfigStore(state => state.removeFavChannel);
+  const isLandscape = isOrientationLandscape(orientation);
 
   const {channel} = route.params;
   const streamUrl = getStreamUrl(channel?.id);
@@ -67,6 +68,11 @@ export default function PlayerScreen({route, navigation}) {
     }
   };
 
+  useEffect(() => {
+    console.log(isLandscape);
+    SystemNavigationBar.fullScreen(isLandscape);
+  }, [isLandscape]);
+
   return (
     <>
       <OrientationLocker
@@ -79,9 +85,8 @@ export default function PlayerScreen({route, navigation}) {
         streamUrl={streamUrl}
         onLoadStart={() => setLoading(true)}
         onLoad={() => setLoading(false)}
-        onError={e => setError(e)}
+        onError={e => console.log(e)}
         loading={loading}
-        error={error}
         onDrawerButtonPress={() => {
           navigation.openDrawer();
         }}
@@ -176,6 +181,16 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     color: APP_THEME.secondary,
+  },
+  channelCountry: {
+    color: APP_THEME.secondary,
+    backgroundColor: APP_THEME.tertiary,
+    fontWeight: 'semibold',
+    fontSize: 12,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    top: 1,
   },
   channelPicture: {
     width: 42,

@@ -75,10 +75,6 @@ export default function VideoComponent({
     };
   }, [setOverlayOpacity]);
 
-  useEffect(() => {
-    SystemNavigationBar.stickyImmersive(isLandscape);
-  }, [isLandscape]);
-
   const overlayAnimatedStyle = useAnimatedStyle(() => ({
     opacity: interpolate(overlayOpacity.value, [0, 1], [0, 1]),
     display: overlayOpacity.value === 0 ? 'none' : 'flex',
