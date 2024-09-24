@@ -31,6 +31,7 @@ import {
 } from '@react-navigation/stack';
 import ChangeCountryScreen from './screens/ChangeCountry';
 import {APP_THEME} from './utils/colors';
+import SplashScreen from 'react-native-splash-screen';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -84,6 +85,10 @@ const playerScreenTransition = {
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
+
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
 
   return (
     <NavigationContainer>

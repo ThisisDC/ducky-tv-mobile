@@ -21,7 +21,7 @@ export const storeFavoriteCountry = async value => {
   try {
     await AsyncStorage.setItem('fav-country', value);
   } catch (e) {
-    console.log(e);
+    return null;
   }
 };
 
@@ -30,7 +30,7 @@ export const getFavoriteCountry = async value => {
     const value = await AsyncStorage.getItem('fav-country');
     return value;
   } catch (e) {
-    console.log(e);
+    return null;
   }
 };
 
@@ -39,7 +39,7 @@ const storeFavoriteChannels = async value => {
     const jsonValue = JSON.stringify(value);
     await AsyncStorage.setItem('fav-channels', jsonValue);
   } catch (e) {
-    console.log(e);
+    return null;
   }
 };
 
@@ -48,6 +48,6 @@ const getFavoriteChannels = async () => {
     const jsonValue = await AsyncStorage.getItem('fav-channels');
     return jsonValue ? JSON.parse(jsonValue) : [];
   } catch (e) {
-    console.log(e);
+    return null;
   }
 };

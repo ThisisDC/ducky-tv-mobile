@@ -69,23 +69,19 @@ export default function PlayerScreen({route, navigation}) {
   };
 
   useEffect(() => {
-    console.log(isLandscape);
-    SystemNavigationBar.fullScreen(isLandscape);
+    SystemNavigationBar.stickyImmersive(isLandscape);
   }, [isLandscape]);
 
   return (
     <>
       <OrientationLocker
         orientation={orientation}
-        onDeviceChange={or => {
-          setCorrectOrientation(or);
-        }}
+        onDeviceChange={or => setCorrectOrientation(or)}
       />
       <VideoComponent
         streamUrl={streamUrl}
         onLoadStart={() => setLoading(true)}
         onLoad={() => setLoading(false)}
-        onError={e => console.log(e)}
         loading={loading}
         onDrawerButtonPress={() => {
           navigation.openDrawer();
@@ -109,7 +105,10 @@ export default function PlayerScreen({route, navigation}) {
                 alt="channel picture"
                 style={styles.channelPicture}
               />
-              <Text style={styles.channelName}>{channel.name}</Text>
+              <View>
+                <Text style={styles.channelName}>{channel.name}</Text>
+                <Text style={styles.channelCountry}>{channel.country}</Text>
+              </View>
             </View>
             <ShrinkablePressable
               onPress={() => {
@@ -187,10 +186,11 @@ const styles = StyleSheet.create({
     backgroundColor: APP_THEME.tertiary,
     fontWeight: 'semibold',
     fontSize: 12,
-    paddingVertical: 4,
-    paddingHorizontal: 10,
+    paddingVertical: 3,
+    paddingHorizontal: 8,
     borderRadius: 20,
-    top: 1,
+    left: -2,
+    alignSelf: 'flex-start',
   },
   channelPicture: {
     width: 42,
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
     borderRadius: 24,
     marginTop: 5,
-    paddingTop: 12,
+    paddingTop: 10,
     flex: 1,
   },
   otherChannelsTitle: {
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   },
   channelList: {
     flexWrap: 'wrap',
-    paddingVertical: 10,
+    paddingVertical: 8,
     gap: 12,
   },
 });

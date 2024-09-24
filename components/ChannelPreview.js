@@ -69,7 +69,6 @@ export default function ChannelPreview({channel}) {
               disableDisconnectError={true}
               // Callback when video cannot be loaded
               onError={e => {
-                console.log(e);
                 setError(true);
               }}
               style={styles.video}

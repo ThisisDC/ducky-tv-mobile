@@ -144,6 +144,11 @@ export default function HomeScreen({route, navigation}) {
     [channels, inputValue, favCountry],
   );
 
+  const renderItem = useCallback(
+    ({item}) => <ChannelPreview channel={item} />,
+    [],
+  );
+
   return (
     <View style={styles.screen}>
       <OrientationLocker orientation={PORTRAIT} />
@@ -151,7 +156,7 @@ export default function HomeScreen({route, navigation}) {
         data={data}
         ref={flatlistRef}
         keyExtractor={item => item.id}
-        renderItem={({item}) => <ChannelPreview channel={item} />}
+        renderItem={renderItem}
         ListHeaderComponent={ListHeaderComponent}
         ListEmptyComponent={ListEmptyComponent}
         refreshing={loading}
