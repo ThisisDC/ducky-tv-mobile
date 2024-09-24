@@ -6,17 +6,24 @@ import {
   Image,
   Pressable,
   TouchableOpacity,
+  Modal,
 } from 'react-native';
-import React, {memo, useEffect, useState} from 'react';
+import React, {memo, useEffect, useMemo, useState} from 'react';
 import {DEFAULT_CHANNEL_IMAGE} from '../data/api';
 import {getChannels} from '../data/storage';
 import {useConfigStore} from '../data/store';
 import {DrawerItem} from '@react-navigation/drawer';
+import {APP_THEME} from '../utils/colors';
 
-export const CustomDrawerContent = memo(({navigation, route}) => {
-  //const isHomeScreen = route?.name === 'Home';
+export const CustomDrawerContent = memo(props => {
   const favChannels = useConfigStore(state => state.favChannels);
   const setFavChannels = useConfigStore(state => state.setFavChannels);
+
+  const {state, navigation} = props;
+  const {routes, index} = state;
+  const focusedRoute = routes[index].name;
+
+  const isHomeFocused = useMemo(() => focusedRoute === 'Home', [focusedRoute]);
 
   useEffect(() => {
     const fetchChannels = async () => {
@@ -28,8 +35,6 @@ export const CustomDrawerContent = memo(({navigation, route}) => {
 
     fetchChannels();
   }, []);
-
-  console.log(favChannels);
 
   return (
     <ScrollView style={styles.drawer}>
@@ -43,20 +48,31 @@ export const CustomDrawerContent = memo(({navigation, route}) => {
           />
         </View>
       </View>
-      <DrawerItem
-        label="Home"
-        style={{backgroundColor: '#ff3c0064', borderRadius: 12}}
-        labelStyle={{color: 'white'}}
-        onPress={() => navigation.navigate('Home')}
-      />
+      <TouchableOpacity
+        style={styles.homeButton}
+        onPress={() => navigation.navigate('Home')}>
+        <Text style={styles.homeButtonText}>Home</Text>
+      </TouchableOpacity>
       <View style={styles.favoriteSection}>
         <View style={styles.divider}></View>
         <Text style={styles.favChannelsText}>Favorite channels</Text>
-        {favChannels.map(channel => (
-          <View key={channel.id}>
-            <DrawerButton channel={channel} navigation={navigation} />
+        {favChannels.length ? (
+          favChannels.map(channel => (
+            <View key={channel.id}>
+              <DrawerButton channel={channel} navigation={navigation} />
+            </View>
+          ))
+        ) : (
+          <View
+            style={{
+              height: '100%',
+              justifyContent: 'center',
+            }}>
+            <Text style={{color: 'white', alignSelf: 'center'}}>
+              No channel added
+            </Text>
           </View>
-        ))}
+        )}
       </View>
     </ScrollView>
   );
@@ -93,44 +109,58 @@ function DrawerButton({channel, navigation}) {
 }
 
 const styles = StyleSheet.create({
-  drawer: {backgroundColor: '#181818', paddingTop: 20},
+  drawer: {backgroundColor: APP_THEME.background, paddingTop: 20},
   logo: {
-    width: 65,
+    width: 60,
     aspectRatio: 1,
     borderRadius: 50,
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+  homeButton: {
+    marginTop: 10,
+    paddingLeft: 20,
+    paddingVertical: 10,
+  },
+  homeButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
   image: {flex: 1, resizeMode: 'contain'},
   header: {
     flexDirection: 'row',
-    padding: 10,
     marginBottom: 10,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingLeft: 20,
   },
   drawerButton: {
     flexDirection: 'row',
     paddingVertical: 8,
     paddingHorizontal: 4,
+    paddingRight: 8,
     gap: 8,
     alignItems: 'center',
   },
   favoriteSection: {
     paddingHorizontal: 8,
+    paddingBottom: 30,
   },
   favChannelsText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 14,
     marginLeft: 6,
-    marginBottom: 10,
   },
   divider: {
     height: 1,
-    backgroundColor: '#454545',
+    backgroundColor: APP_THEME.tertiary,
     flex: 1,
     marginHorizontal: 4,
-    marginVertical: 12,
+    marginVertical: 10,
   },
   channelImage: {
     width: 40,
@@ -159,8 +189,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   channelCountry: {
-    color: 'black',
-    backgroundColor: '#e8e8e8',
+    color: APP_THEME.secondary,
+    backgroundColor: APP_THEME.tertiary,
     fontWeight: 'semibold',
     paddingVertical: 2,
     paddingHorizontal: 8,
@@ -172,5 +202,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
+  },
+  favCountryButton: {
+    backgroundColor: '#383838',
+    padding: 8,
+    borderRadius: 12,
+  },
+  favCountryText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });

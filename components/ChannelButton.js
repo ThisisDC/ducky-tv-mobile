@@ -2,16 +2,17 @@ import {TouchableOpacity, View, Image, StyleSheet, Text} from 'react-native';
 import React from 'react';
 import {DEFAULT_CHANNEL_IMAGE} from '../data/api';
 import {useNavigation} from '@react-navigation/native';
+import {APP_THEME} from '../utils/colors';
 
-export default function ChannelButton({channel, selected_country}) {
+export default function ChannelButton({channel, display_country}) {
   const navigation = useNavigation();
 
   return (
     <TouchableOpacity
       style={styles.channelButton}
       key={channel.p}
-      onPress={() => navigation.navigate('Player', {channelId: channel.id})}>
-      <View style={{gap: 8, flexDirection: 'row', alignItems: 'center'}}>
+      onPress={() => navigation.navigate('Player', {channel: channel})}>
+      <View style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
         <Image
           style={styles.channelButtonImage}
           source={{
@@ -21,9 +22,14 @@ export default function ChannelButton({channel, selected_country}) {
         <Text style={styles.channelButtonTitle}>{channel.name}</Text>
       </View>
 
-      {channel.country !== selected_country ? (
+      {display_country ? (
         <Text style={styles.channelButtonCountry}>{channel.country}</Text>
-      ) : null}
+      ) : (
+        <View style={{flexDirection: 'row', alignItems: 'center', gap: 6}}>
+          <View style={styles.liveDot}></View>
+          <Text style={styles.liveText}>Live</Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 }
@@ -32,31 +38,41 @@ const styles = StyleSheet.create({
   channelButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     gap: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 14,
+    paddingVertical: 4,
+    paddingHorizontal: 16,
+    paddingRight: 24,
     width: '100%',
-    height: '25%',
+    justifyContent: 'space-between',
   },
   channelButtonImage: {
     aspectRatio: '1/1',
-    width: 32,
+    width: 40,
     borderRadius: 50,
   },
   channelButtonTitle: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: APP_THEME.secondary,
   },
   channelButtonCountry: {
-    fontWeight: '400',
     zIndex: 1,
-    backgroundColor: '#bd0000d6',
+    backgroundColor: '#313131',
     paddingVertical: 6,
     paddingHorizontal: 10,
     color: 'white',
     borderRadius: 20,
     position: 'absolute',
     right: 12,
+  },
+  liveDot: {
+    width: 12,
+    aspectRatio: 1,
+    borderRadius: 50,
+    backgroundColor: 'red',
+  },
+  liveText: {
+    fontWeight: 'bold',
+    color: 'white',
   },
 });

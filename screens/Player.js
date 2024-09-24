@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import VideoComponent from '../components/VideoComponent';
-import {getStreamUrl} from '../data/api';
+import {DEFAULT_CHANNEL_IMAGE, getStreamUrl} from '../data/api';
 import {
   OrientationLocker,
   PORTRAIT,
@@ -20,6 +20,8 @@ import HeartFilledIcon from '../assets/icons/heart-filled.svg';
 import ShrinkablePressable from '../components/ShrinkablePressable';
 import {useConfigStore} from '../data/store';
 import {addChannel, removeChannel} from '../data/storage';
+import {APP_THEME} from '../utils/colors';
+import ChannelButton from '../components/ChannelButton';
 
 export const isOrientationLandscape = orientation =>
   orientation === 'LANDSCAPE-LEFT' ||
@@ -32,7 +34,9 @@ export default function PlayerScreen({route, navigation}) {
   const [orientation, setOrientation] = useState(PORTRAIT);
   const [added, setAdded] = useState(false);
 
+  const channels = useConfigStore(state => state.channels);
   const favChannels = useConfigStore(state => state.favChannels);
+  const favCountry = useConfigStore(state => state.favCountry);
 
   const addFavChannel = useConfigStore(state => state.addFavChannel);
   const removeFavChannel = useConfigStore(state => state.removeFavChannel);
@@ -64,11 +68,12 @@ export default function PlayerScreen({route, navigation}) {
   };
 
   return (
-    <View>
+    <>
       <OrientationLocker
         orientation={orientation}
-        onChange={or => setCorrectOrientation(or)}
-        onDeviceChange={or => setCorrectOrientation(or)}
+        onDeviceChange={or => {
+          setCorrectOrientation(or);
+        }}
       />
       <VideoComponent
         streamUrl={streamUrl}
@@ -77,17 +82,24 @@ export default function PlayerScreen({route, navigation}) {
         onError={e => setError(e)}
         loading={loading}
         error={error}
-        onDrawerButtonPress={() => navigation.openDrawer()}
+        onDrawerButtonPress={() => {
+          navigation.openDrawer();
+        }}
         orientation={orientation}
         onOrientationChange={onOrientationChange}
+        channel={channel}
       />
       {!isOrientationLandscape(orientation) && (
-        <View>
+        <View
+          style={{
+            backgroundColor: APP_THEME.background,
+            flex: 1,
+          }}>
           <View style={styles.channel}>
             <View style={styles.channelInfo}>
               <Image
                 source={{
-                  uri: 'https://www.salvatorepumo.it/wp-content/uploads/2022/08/logo-sky-oggi.png',
+                  uri: DEFAULT_CHANNEL_IMAGE,
                 }}
                 alt="channel picture"
                 style={styles.channelPicture}
@@ -108,18 +120,42 @@ export default function PlayerScreen({route, navigation}) {
                 });
               }}>
               {added ? (
-                <HeartFilledIcon width={30} height={30} fill="#f6c900" />
+                <HeartFilledIcon
+                  width={30}
+                  height={30}
+                  fill={APP_THEME.primary}
+                />
               ) : (
                 <HeartIcon width={30} height={30} />
               )}
             </ShrinkablePressable>
           </View>
           <View style={styles.otherChannels}>
-            <Text style={styles.otherChannelsTitle}>Other Channels</Text>
+            <Text style={styles.otherChannelsTitle}>
+              {favCountry !== 'Global'
+                ? 'Other channels in ' + favCountry
+                : 'Other popular channels'}
+            </Text>
+            <View style={styles.channelList}>
+              {channels
+                .filter(
+                  ch =>
+                    (ch.country === favCountry && ch.id !== channel.id) ||
+                    favCountry === 'Global',
+                )
+                .slice(0, 8)
+                .map(ch => (
+                  <ChannelButton
+                    channel={ch}
+                    key={ch.id}
+                    display_country={favCountry === 'Global'}
+                  />
+                ))}
+            </View>
           </View>
         </View>
       )}
-    </View>
+    </>
   );
 }
 
@@ -132,22 +168,37 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   channelInfo: {
-    gap: 8,
+    gap: 12,
     flexDirection: 'row',
     alignItems: 'center',
   },
   channelName: {
-    fontSize: 16,
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: APP_THEME.secondary,
   },
   channelPicture: {
-    width: 38,
+    width: 42,
     borderRadius: 50,
     aspectRatio: '1/1',
   },
   otherChannels: {
-    padding: 12,
+    backgroundColor: APP_THEME.tertiary,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    borderRadius: 24,
+    marginTop: 5,
+    paddingTop: 12,
+    flex: 1,
   },
   otherChannelsTitle: {
-    fontSize: 20,
+    color: APP_THEME.secondary,
+    fontSize: 24,
+    paddingLeft: 15,
+  },
+  channelList: {
+    flexWrap: 'wrap',
+    paddingVertical: 10,
+    gap: 12,
   },
 });

@@ -5,6 +5,7 @@ import {getStreamUrl} from '../data/api';
 import {useNavigation} from '@react-navigation/native';
 import {DEFAULT_CHANNEL_IMAGE} from '../data/api';
 import LoadingAlert from './LoadingAlert';
+import {APP_THEME} from '../utils/colors';
 
 export default function ChannelPreview({channel}) {
   const videoRef = useRef(null);
@@ -27,7 +28,7 @@ export default function ChannelPreview({channel}) {
               channel: channel,
             })
           }
-          android_ripple={{color: 'orange'}}
+          android_ripple={{color: APP_THEME.primary}}
           style={[styles.overlay, {zIndex: 2}]}
         />
         {loading && (
@@ -37,23 +38,23 @@ export default function ChannelPreview({channel}) {
                 channelId: channel.id,
               })
             }
-            android_ripple={{color: 'orange'}}
+            android_ripple={{color: APP_THEME.primary}}
             style={[
               styles.overlay,
               {
-                backgroundColor: 'black',
+                backgroundColor: '#252525',
                 justifyContent: 'center',
                 alignItems: 'center',
               },
             ]}>
-            <LoadingAlert />
+            <LoadingAlert size={70} />
           </Pressable>
         )}
         <View
           style={{
             aspectRatio: '16/9',
             width: '100%',
-            backgroundColor: 'black',
+            backgroundColor: '#565656',
           }}>
           {!error && (
             <Video
@@ -65,6 +66,7 @@ export default function ChannelPreview({channel}) {
               onLoad={onLoad}
               paused
               muted={true}
+              disableDisconnectError={true}
               // Callback when video cannot be loaded
               onError={e => {
                 console.log(e);
@@ -133,16 +135,17 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
   channelCountry: {
-    color: 'black',
-    backgroundColor: '#e8e8e8',
+    color: APP_THEME.secondary,
+    backgroundColor: APP_THEME.tertiary,
     fontWeight: 'semibold',
-    paddingVertical: 2,
-    paddingHorizontal: 8,
+    fontSize: 12,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
     borderRadius: 20,
     left: -1,
   },
   channelPreviewInfo: {
-    backgroundColor: '#ffffff97',
+    backgroundColor: APP_THEME.background,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
@@ -156,11 +159,12 @@ const styles = StyleSheet.create({
     aspectRatio: '1/1',
     width: 35,
     borderRadius: 50,
+    top: 3,
   },
   channelPreviewTitle: {
     fontSize: 17,
-    fontWeight: 'bold',
-    color: 'black',
+    fontWeight: 'semibold',
+    color: APP_THEME.secondary,
   },
   video: {
     aspectRatio: '16/9',

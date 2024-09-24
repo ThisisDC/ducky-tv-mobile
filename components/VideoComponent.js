@@ -4,6 +4,9 @@ import {
   StyleSheet,
   ActivityIndicator,
   Pressable,
+  StatusBar,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import Video from 'react-native-video';
@@ -19,9 +22,11 @@ import Animated, {
   withSpring,
   interpolate,
 } from 'react-native-reanimated';
-import {PORTRAIT} from 'react-native-orientation-locker';
+import {LANDSCAPE, PORTRAIT} from 'react-native-orientation-locker';
 import {isOrientationLandscape} from '../screens/Player';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
+import {APP_THEME} from '../utils/colors';
+import {DEFAULT_CHANNEL_IMAGE} from '../data/api';
 
 export default function VideoComponent({
   streamUrl,
@@ -33,6 +38,7 @@ export default function VideoComponent({
   onDrawerButtonPress,
   orientation,
   onOrientationChange,
+  channel,
 }) {
   const videoRef = useRef(null);
 
@@ -86,7 +92,7 @@ export default function VideoComponent({
 
   const handleReloadStream = useCallback(() => {
     if (videoRef.current) {
-      videoRef.current.seek(0, 0); // Seek to the start (live point)
+      videoRef.current.seek(0); // Seek to the start (live point)
     }
   }, []);
 
@@ -122,9 +128,21 @@ export default function VideoComponent({
           controls={false}
           // Callback when video cannot be loaded
           onError={onError}
-          style={[{flex: 1}, isLandscape && styles.landscapeRotation]}
+          disableDisconnectError={true}
+          style={[{flex: 1}, isLandscape && styles.landscapeVideo]}
           playWhenInactive
           resizeMode="contain"
+          bufferConfig={{
+            minBufferMs: 5000,
+            maxBufferMs: 20000,
+            bufferForPlaybackMs: 1500,
+            bufferForPlaybackAfterRebufferMs: 3000,
+            backBufferDurationMs: 120000,
+            cacheSizeMB: 0,
+            live: {
+              targetOffsetMs: 500,
+            },
+          }}
         />
       </Pressable>
       {loading && (
@@ -151,9 +169,18 @@ export default function VideoComponent({
             <MenuIcon width="20" height="20" />
           </AnimatedPressable>
         )}
+        {channel && isLandscape && (
+          <View style={styles.channelInfo}>
+            <Image
+              style={styles.channelImage}
+              source={{uri: DEFAULT_CHANNEL_IMAGE}}
+            />
+            <Text style={styles.channelName}>{channel.name}</Text>
+          </View>
+        )}
         <Pressable
           style={styles.playPauseButton}
-          onPress={() => {
+          onPress={e => {
             setPaused(state => !state);
             setIsLive(false);
           }}>
@@ -194,8 +221,9 @@ const styles = StyleSheet.create({
     aspectRatio: '16/9',
     justifyContent: 'center',
   },
-  landscapeRotation: {
+  landscapeVideo: {
     //transform: [{rotateZ: '-90deg'}],
+    left: -StatusBar.currentHeight / 2,
   },
   fullscreenVideo: {
     width: '100%',
@@ -210,7 +238,7 @@ const styles = StyleSheet.create({
     left: 0,
     width: 20,
     height: 20,
-    backgroundColor: 'white',
+    backgroundColor: APP_THEME.tertiary,
     padding: 20,
     paddingLeft: 35,
     paddingRight: 25,
@@ -243,15 +271,14 @@ const styles = StyleSheet.create({
   },
   controls: {
     position: 'absolute',
-    width: '100%',
+    flex: 1,
     bottom: 0,
     left: 0,
     right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 15,
-    paddingRight: 25,
+    padding: 12,
   },
   liveButton: {
     flexDirection: 'row',
@@ -274,6 +301,27 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  fullScreenButton: {},
+  fullScreenButton: {
+    padding: 10,
+    borderRadius: 8,
+  },
   playPauseButton: {},
+  channelInfo: {
+    position: 'absolute',
+    top: 15,
+    left: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  channelImage: {
+    width: 40,
+    aspectRatio: 1,
+    borderRadius: 50,
+  },
+  channelName: {
+    color: APP_THEME.secondary,
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
 });
