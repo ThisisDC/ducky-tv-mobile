@@ -15,15 +15,9 @@ import {useConfigStore} from '../data/store';
 import {DrawerItem} from '@react-navigation/drawer';
 import {APP_THEME} from '../utils/colors';
 
-export const CustomDrawerContent = memo(props => {
+export const CustomDrawerContent = memo(({navigation}) => {
   const favChannels = useConfigStore(state => state.favChannels);
   const setFavChannels = useConfigStore(state => state.setFavChannels);
-
-  const {state, navigation} = props;
-  const {routes, index} = state;
-  const focusedRoute = routes[index].name;
-
-  const isHomeFocused = useMemo(() => focusedRoute === 'Home', [focusedRoute]);
 
   useEffect(() => {
     const fetchChannels = async () => {
@@ -69,7 +63,7 @@ export const CustomDrawerContent = memo(props => {
               justifyContent: 'center',
             }}>
             <Text style={{color: 'white', alignSelf: 'center'}}>
-              No channel added
+              Add a channel by clicking on ❤️
             </Text>
           </View>
         )}

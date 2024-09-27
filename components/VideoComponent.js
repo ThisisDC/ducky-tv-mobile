@@ -102,6 +102,7 @@ export default function VideoComponent({
         }}>
         <Video
           // Can be a URL or a local file.
+          key={channel.id}
           source={{
             uri: streamUrl,
             type: 'm3u8',
@@ -121,7 +122,6 @@ export default function VideoComponent({
             }
           }}
           paused={paused}
-          controls={false}
           // Callback when video cannot be loaded
           onError={onError}
           disableDisconnectError={true}
@@ -219,7 +219,6 @@ const styles = StyleSheet.create({
   },
   landscapeVideo: {
     //transform: [{rotateZ: '-90deg'}],
-    left: -StatusBar.currentHeight / 2,
   },
   fullscreenVideo: {
     width: '100%',

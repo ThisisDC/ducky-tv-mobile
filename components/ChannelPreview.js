@@ -62,6 +62,7 @@ export default function ChannelPreview({channel}) {
                 uri: getStreamUrl(channel?.id),
                 type: 'm3u8',
               }}
+              key={channel.id}
               ref={videoRef}
               onLoad={onLoad}
               paused
@@ -72,6 +73,7 @@ export default function ChannelPreview({channel}) {
                 setError(true);
               }}
               style={styles.video}
+              removeClippedSubviews={false}
             />
           )}
         </View>

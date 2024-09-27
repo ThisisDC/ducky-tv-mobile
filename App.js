@@ -20,6 +20,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import HomeScreen from './screens/Home';
 import PlayerScreen from './screens/Player';
 import {
+  DarkTheme,
   getFocusedRouteNameFromRoute,
   NavigationContainer,
 } from '@react-navigation/native';
@@ -29,9 +30,10 @@ import {
   HeaderStyleInterpolators,
   TransitionSpecs,
 } from '@react-navigation/stack';
-import ChangeCountryScreen from './screens/ChangeCountry';
 import {APP_THEME} from './utils/colors';
 import SplashScreen from 'react-native-splash-screen';
+import ChangeCountryModal from './screens/ChangeCountry';
+import WelcomeModal from './screens/Welcome';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -50,28 +52,10 @@ const playerScreenTransition = {
           {
             translateY: current.progress.interpolate({
               inputRange: [0, 1],
-              outputRange: [layouts.screen.height + 80, 0],
+              outputRange: [layouts.screen.height, 0],
             }),
           },
-          // {
-          //   rotate: current.progress.interpolate({
-          //     inputRange: [0, 1],
-          //     outputRange: ["90deg", "0deg"],
-          //   }),
-          // },
-          // {
-          //   scale: next
-          //     ? next.progress.interpolate({
-          //         inputRange: [0, 1],
-          //         outputRange: [1, 0.8],
-          //       })
-          //     : 1,
-          // },
         ],
-        // opacity: next.progress.interpolate({
-        //   inputRange: [0, 1],
-        //   outputRange: [0, 0.2],
-        // }),
       },
       overlayStyle: {
         opacity: current.progress.interpolate({
@@ -91,11 +75,12 @@ function App() {
   }, []);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={DarkTheme}>
       <SafeAreaView style={{flex: 1}}>
         <StatusBar backgroundColor={'black'} />
         <Drawer.Navigator
           screenOptions={{
+            headerShown: false,
             headerTintColor: APP_THEME.secondary,
             title: 'Home',
             headerTitleStyle: {
@@ -113,14 +98,7 @@ function App() {
             },
           }}
           drawerContent={props => <CustomDrawerContent {...props} />}>
-          <Drawer.Screen
-            name="Main"
-            component={StackNavigator}
-            options={({route}) => {
-              const routeName = getFocusedRouteNameFromRoute(route);
-              return {headerShown: routeName !== 'Player'};
-            }}
-          />
+          <Drawer.Screen name="Main" component={StackNavigator} />
         </Drawer.Navigator>
       </SafeAreaView>
     </NavigationContainer>
@@ -132,8 +110,13 @@ function StackNavigator() {
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen
+        name="Welcome"
+        component={WelcomeModal}
+        options={{presentation: 'transparentModal', unmountOnBlur: true}}
+      />
+      <Stack.Screen
         name="ChangeCountry"
-        component={ChangeCountryScreen}
+        component={ChangeCountryModal}
         options={{presentation: 'transparentModal', unmountOnBlur: true}}
       />
       <Stack.Screen

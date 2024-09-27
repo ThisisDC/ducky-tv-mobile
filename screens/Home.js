@@ -30,6 +30,8 @@ import {APP_THEME} from '../utils/colors';
 import WorldIcon from '../assets/icons/world.svg';
 import CancelIcon from '../assets/icons/cancel.svg';
 import SearchIcon from '../assets/icons/search.svg';
+import MenuIcon from '../assets/icons/menu.svg';
+
 import ArrowTopIcon from '../assets/icons/arrow-top.svg';
 import FloatingActionButton from '../components/FloatingActionButton';
 
@@ -48,7 +50,13 @@ export default function HomeScreen({route, navigation}) {
   const setCountries = useConfigStore(state => state.setCountries);
   const setFavCountry = useConfigStore(state => state.setFavCountry);
 
+  useEffect(() => navigation.navigate('Welcome'), []);
+
+  useEffect(() => {}, []);
+
   useLayoutEffect(() => {
+    if (!route?.params?.confirmed) return;
+
     const startup = async () => {
       setLoading(true);
       const favouriteCountry = await getFavoriteCountry();
@@ -67,7 +75,7 @@ export default function HomeScreen({route, navigation}) {
     };
 
     startup();
-  }, []);
+  }, [route?.params]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -84,6 +92,22 @@ export default function HomeScreen({route, navigation}) {
           paddingHorizontal: 10,
           paddingBottom: 10,
         }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            paddingVertical: 10,
+            alignItems: 'center',
+            gap: 8,
+          }}>
+          <Pressable
+            style={{padding: 4}}
+            onPress={() => navigation.openDrawer()}>
+            <MenuIcon width={24} height={24} />
+          </Pressable>
+          <Text style={{color: 'white', fontSize: 18, fontWeight: 'bold'}}>
+            Home
+          </Text>
+        </View>
         <View style={styles.header}>
           <Text style={styles.title}>
             {favCountry !== 'Global'
@@ -162,6 +186,7 @@ export default function HomeScreen({route, navigation}) {
         refreshing={loading}
         initialNumToRender={4}
         maxToRenderPerBatch={2}
+        onError={e => console.log('Home: ' + e)}
         windowSize={4}
         showsVerticalScrollIndicator={false}
         onScroll={e => setListAtTop(e.nativeEvent.contentOffset.y < 50)}
@@ -195,7 +220,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    paddingBottom: 10,
+    paddingLeft: 5,
   },
   searchInput: {
     backgroundColor: '#323232',

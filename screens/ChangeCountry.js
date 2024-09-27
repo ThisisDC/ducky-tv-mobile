@@ -13,7 +13,7 @@ import CancelIcon from '../assets/icons/cancel.svg';
 import {storeFavoriteCountry} from '../data/storage';
 import {APP_THEME} from '../utils/colors';
 
-export default function ChangeCountryScreen({navigation}) {
+export default function ChangeCountryModal({navigation}) {
   const countries = useConfigStore(state => state.countries);
   const favCountry = useConfigStore(state => state.favCountry);
   const setFavCountry = useConfigStore(state => state.setFavCountry);

@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Image,
   Pressable,
+  ScrollView,
 } from 'react-native';
 import React, {useEffect, useMemo, useState} from 'react';
 import VideoComponent from '../components/VideoComponent';
