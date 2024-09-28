@@ -5,7 +5,6 @@
 
     <!-- Set the theme of the Activity that directly follows your splash
     screen. This is required. -->
-       <item name="windowSplashScreenAnimationDuration">0</item>
     <item name="postSplashScreenTheme">@style/Theme.App</item>
     </style>
 
