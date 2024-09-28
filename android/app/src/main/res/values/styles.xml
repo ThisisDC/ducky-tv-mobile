@@ -1,7 +1,16 @@
 <resources>
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+    
+    <item name="windowSplashScreenBackground">@color/black</item>
+
+    <!-- Set the theme of the Activity that directly follows your splash
+    screen. This is required. -->
+       <item name="windowSplashScreenAnimationDuration">0</item>
+    <item name="postSplashScreenTheme">@style/Theme.App</item>
+    </style>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="Theme.App" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
     </style>

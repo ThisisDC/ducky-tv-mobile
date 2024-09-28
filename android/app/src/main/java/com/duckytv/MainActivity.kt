@@ -10,7 +10,10 @@ import android.content.Intent
 import android.content.res.Configuration
 
 import android.os.Bundle;
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import org.devio.rn.splashscreen.SplashScreen;
+
+
 
 class MainActivity : ReactActivity() {
 
@@ -29,7 +32,8 @@ class MainActivity : ReactActivity() {
   override fun getMainComponentName(): String = "DuckyTV"
 
   override fun onCreate(savedInstanceState: Bundle?) {
-        SplashScreen.show(this)
+         val splashScreen = installSplashScreen()
+         SplashScreen.show(this)
         super.onCreate(savedInstanceState)
     }
 
