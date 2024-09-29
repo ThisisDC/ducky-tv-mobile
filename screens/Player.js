@@ -70,15 +70,25 @@ export default function PlayerScreen({route, navigation}) {
   };
 
   useEffect(() => {
+    SystemNavigationBar.fullScreen(isLandscape);
     SystemNavigationBar.stickyImmersive(isLandscape);
   }, [isLandscape]);
 
+  const [orientationTimeout, setOrientationTimeout] = useState();
+
   return (
-    <>
+    <View style={{flex: 1, backgroundColor: '#000000'}}>
       <OrientationLocker
         orientation={orientation}
-        onDeviceChange={or => setCorrectOrientation(or)}
+        onDeviceChange={or => {
+          clearTimeout(orientationTimeout);
+          const timeout = setTimeout(() => {
+            setCorrectOrientation(or);
+          }, 500);
+          setOrientationTimeout(timeout);
+        }}
       />
+
       <VideoComponent
         streamUrl={streamUrl}
         onLoadStart={() => setLoading(true)}
@@ -160,7 +170,7 @@ export default function PlayerScreen({route, navigation}) {
           </View>
         </View>
       )}
-    </>
+    </View>
   );
 }
 

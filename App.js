@@ -71,11 +71,18 @@ function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   useEffect(() => {
-    SplashScreen.hide();
+    setTimeout(() => SplashScreen.hide(), 2000);
   }, []);
 
+  const MyTheme = {
+    ...DarkTheme,
+    colors: {
+      ...DarkTheme.colors,
+      background: APP_THEME.primary, //whatever color you want it to be'
+    },
+  };
   return (
-    <NavigationContainer theme={DarkTheme}>
+    <NavigationContainer theme={MyTheme}>
       <SafeAreaView style={{flex: 1}}>
         <StatusBar backgroundColor={'black'} />
         <Drawer.Navigator
@@ -107,7 +114,10 @@ function App() {
 
 function StackNavigator() {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen
         name="Welcome"

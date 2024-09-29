@@ -217,8 +217,9 @@ const styles = StyleSheet.create({
     aspectRatio: '16/9',
     justifyContent: 'center',
   },
-  landscapeVideo: {
+  landscapeRotation: {
     //transform: [{rotateZ: '-90deg'}],
+    marginHorizontal: 40,
   },
   fullscreenVideo: {
     width: '100%',
