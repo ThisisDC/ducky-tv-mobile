@@ -81,11 +81,11 @@ export default function PlayerScreen({route, navigation}) {
       <OrientationLocker
         orientation={orientation}
         onDeviceChange={or => {
-          clearTimeout(orientationTimeout);
+          /*clearTimeout(orientationTimeout);
           const timeout = setTimeout(() => {
             setCorrectOrientation(or);
           }, 500);
-          setOrientationTimeout(timeout);
+          setOrientationTimeout(timeout);*/
         }}
       />
 

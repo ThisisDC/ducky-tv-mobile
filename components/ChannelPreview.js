@@ -7,6 +7,8 @@ import {DEFAULT_CHANNEL_IMAGE} from '../data/api';
 import LoadingAlert from './LoadingAlert';
 import {APP_THEME} from '../utils/colors';
 
+const IS_DISABLED = true;
+
 export default function ChannelPreview({channel}) {
   const videoRef = useRef(null);
   const [loading, setLoading] = useState(true);
@@ -56,7 +58,7 @@ export default function ChannelPreview({channel}) {
             width: '100%',
             backgroundColor: '#565656',
           }}>
-          {!error && (
+          {!IS_DISABLED && !error && (
             <Video
               source={{
                 uri: getStreamUrl(channel?.id),
